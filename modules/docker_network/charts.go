@@ -10,27 +10,7 @@ const (
 	prioNetworkBytes = module.Priority + iota
 )
 
-var summaryCharts = module.Charts{
-	// These charts will be collected for all of docker
-	// Mostly just aggregate stats
-	networkBytesChart.Copy(),
-}
-
-var (
-	networkBytesChart = module.Chart{
-		ID:       "network_bytes",
-		Title:    "Network bytes",
-		Units:    "bytes/s",
-		Fam:      "network",
-		Ctx:      "docker_net.network_bytes",
-		Priority: prioNetworkBytes,
-		Type:     module.Stacked,
-		Dims: module.Dims{
-			{ID: "network_bytes_rx", Name: "received"},
-			{ID: "network_bytes_tx", Name: "sent"},
-		},
-	}
-)
+var summaryCharts = module.Charts{}
 
 var (
 	containerNetworkChartsTmpl = module.Charts{

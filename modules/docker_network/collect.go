@@ -78,6 +78,12 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 		}
 		// We can now get the network stats
 		network := stat.Networks
+		// If there's no previous stats for this container then we ignore it but save the stats
+		if _, ok := d.previousStats[container.ID]; !ok {
+			d.previousStats[container.ID] = stat
+			cancel()
+			continue
+		}
 		// Now we want the tx and rx bytes
 		txBytes := 0
 		rxBytes := 0
@@ -86,6 +92,17 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 			txBytes += int(net.TxBytes)
 			rxBytes += int(net.RxBytes)
 		}
+		// Add up previous stats
+		prev := d.previousStats[container.ID]
+		for _, net := range prev.Networks {
+			txBytes -= int(net.TxBytes)
+			rxBytes -= int(net.RxBytes)
+		}
+		// Now we have how much traffic has happened in the last "update time" seconds
+		// So to get this into a bytes/sec we divide by the update time
+		txBytes /= d.UpdateEvery
+		rxBytes /= d.UpdateEvery
+		// Now we have what we wanted
 		name := strings.TrimPrefix(container.Names[0], "/")
 
 		seen[name] = true
@@ -100,6 +117,8 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 		px := fmt.Sprintf("container_%s_", name)
 		mx[px+"network_bytes_tx"] = int64(txBytes)
 		mx[px+"network_bytes_rx"] = int64(rxBytes)
+		// Update the previous stats
+		d.previousStats[container.ID] = stat
 		// We can now close the context
 		cancel()
 	}

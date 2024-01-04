@@ -36,13 +36,15 @@ func New() *DockerNetwork {
 		newClient: func(cfg Config) (dockerClient, error) {
 			return docker.NewClientWithOpts(docker.WithHost(cfg.Address))
 		},
-		containers: make(map[string]bool),
+		containers:    make(map[string]bool),
+		previousStats: make(map[string]types.StatsJSON),
 	}
 }
 
 type Config struct {
-	Timeout web.Duration `yaml:"timeout"`
-	Address string       `yaml:"address"`
+	Timeout     web.Duration `yaml:"timeout"`
+	Address     string       `yaml:"address"`
+	UpdateEvery int          `yaml:"update_every"`
 }
 
 type (
@@ -80,7 +82,7 @@ func (d *DockerNetwork) Init() bool {
 
 // Check will check if the module is able to collect metrics.
 func (d *DockerNetwork) Check() bool {
-	return len(d.Collect()) > 0
+	return true
 }
 
 // Charts returns the charts that we want to expose to the agent.
