@@ -18,7 +18,7 @@ func init() {
 	module.Register("docker_network", module.Creator{
 		JobConfigSchema: configSchema,
 		Defaults: module.Defaults{
-			UpdateEvery: 10,
+			UpdateEvery: 2,
 		},
 		Create: func() module.Module { return New() },
 	})
