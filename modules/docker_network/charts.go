@@ -47,8 +47,8 @@ var (
 		Priority: prioNetworkBytes,
 		Type:     module.Stacked,
 		Dims: module.Dims{
-			{ID: "network_%s_bytes_rx", Name: "received"},
-			{ID: "network_%s_bytes_tx", Name: "sent"},
+			{ID: "container_%s_network_bytes_rx", Name: "received"},
+			{ID: "container_%s_network_bytes_tx", Name: "sent"},
 		},
 	}
 )

@@ -29,7 +29,7 @@ func New() *DockerNetwork {
 			Address: docker.DefaultDockerHost,
 			Timeout: web.Duration{Duration: time.Second * 5},
 		},
-		charts: summaryCharts.Copy(), // TODO: Implement summaryCharts
+		charts: summaryCharts.Copy(),
 		newClient: func(cfg Config) (dockerClient, error) {
 			return docker.NewClientWithOpts(docker.WithHost(cfg.Address))
 		},
@@ -62,7 +62,7 @@ type (
 		Info(ctx context.Context) (types.Info, error)
 		// We just need a list of containers and the stats about it
 		ContainerList(ctx context.Context, options types.ContainerListOptions) ([]types.Container, error)
-		// TODO: Implement container stats
+		ContainerStats(ctx context.Context, containerID string, stream bool) (types.ContainerStats, error)
 		Close() error
 	}
 )
@@ -88,7 +88,7 @@ func (d *DockerNetwork) Charts() *module.Charts {
 func (d *DockerNetwork) Collect() map[string]int64 {
 	// All we'll be collecting is the current bit rate of the network interface.
 	// This does mean we need to store a previous value, so we can calculate the difference.
-	mx, err := d.collect() // TODO: Implement collect
+	mx, err := d.collect()
 	if err != nil {
 		d.Error(err)
 	}
