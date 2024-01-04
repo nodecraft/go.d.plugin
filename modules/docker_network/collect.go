@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/docker/docker/api/types"
+	"strings"
+	"time"
 )
 
 func (d *DockerNetwork) collect() (map[string]int64, error) {
@@ -52,18 +54,26 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 
 	// Get the stats for each container
 	for _, container := range containers {
+		// Create a new context for each container
+		ctx, cancel := context.WithTimeout(context.Background(), d.Timeout.Duration+(time.Second*5))
 		stats, err := d.client.ContainerStats(ctx, container.ID, false)
 		if err != nil {
+			cancel()
 			return err
 		}
 
 		// This returns a body that's a reader, so we need to read it
 		body := stats.Body
-		defer func() { _ = body.Close() }()
 
 		// Now we can decode the stats
 		var stat types.StatsJSON
 		if err := json.NewDecoder(body).Decode(&stat); err != nil {
+			cancel()
+			return err
+		}
+		// Close the body
+		if err := body.Close(); err != nil {
+			cancel()
 			return err
 		}
 		// We can now get the network stats
@@ -76,7 +86,7 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 			txBytes += int(net.TxBytes)
 			rxBytes += int(net.RxBytes)
 		}
-		name := stat.Name
+		name := strings.TrimPrefix(container.Names[0], "/")
 
 		seen[name] = true
 
@@ -90,6 +100,8 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 		px := fmt.Sprintf("container_%s_", name)
 		mx[px+"network_bytes_tx"] = int64(txBytes)
 		mx[px+"network_bytes_rx"] = int64(rxBytes)
+		// We can now close the context
+		cancel()
 	}
 
 	for name := range d.containers {

@@ -17,7 +17,10 @@ var configSchema string
 func init() {
 	module.Register("docker_network", module.Creator{
 		JobConfigSchema: configSchema,
-		Create:          func() module.Module { return New() },
+		Defaults: module.Defaults{
+			UpdateEvery: 10,
+		},
+		Create: func() module.Module { return New() },
 	})
 }
 
@@ -53,7 +56,8 @@ type (
 		client        dockerClient
 		verNegotiated bool
 
-		containers map[string]bool
+		containers    map[string]bool
+		previousStats map[string]types.StatsJSON
 	}
 	// For our docker client, we use the official docker client library.
 	// We embed the client in our module, so we can easily mock it in our tests.
