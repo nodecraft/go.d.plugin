@@ -52,75 +52,92 @@ func (d *DockerNetwork) collectContainers(mx map[string]int64) error {
 
 	seen := make(map[string]bool)
 
-	// Get the stats for each container
+	// We need to do the stats retrieval async
+	// We need some way to know when all of them are done
+	// So we use a waitgroup
+
+	waitGroup := make(chan struct{}, len(containers))
+
+	// Loop through all the containers and get their stats
 	for _, container := range containers {
+		// Add to the waitgroup
+		waitGroup <- struct{}{}
 		// Create a new context for each container
 		ctx, cancel := context.WithTimeout(context.Background(), d.Timeout.Duration+(time.Second*5))
-		stats, err := d.client.ContainerStats(ctx, container.ID, false)
-		if err != nil {
-			cancel()
-			return err
-		}
+		go func(ctx context.Context, container types.Container) {
+			d.Debugf("collecting stats for container %s", container.ID[:12])
+			defer func() {
+				// We're done with this container
+				<-waitGroup
+				// Close the context
+				cancel()
+			}()
+			stats, err := d.client.ContainerStats(ctx, container.ID, false)
+			if err != nil {
+				return
+			}
 
-		// This returns a body that's a reader, so we need to read it
-		body := stats.Body
+			// This returns a body that's a reader, so we need to read it
+			body := stats.Body
 
-		// Now we can decode the stats
-		var stat types.StatsJSON
-		if err := json.NewDecoder(body).Decode(&stat); err != nil {
-			cancel()
-			return err
-		}
-		// Close the body
-		if err := body.Close(); err != nil {
-			cancel()
-			return err
-		}
-		// We can now get the network stats
-		network := stat.Networks
-		// If there's no previous stats for this container then we ignore it but save the stats
-		if _, ok := d.previousStats[container.ID]; !ok {
+			// Now we can decode the stats
+			var stat types.StatsJSON
+			if err := json.NewDecoder(body).Decode(&stat); err != nil {
+				return
+			}
+			// Close the body
+			if err := body.Close(); err != nil {
+				return
+			}
+			// We can now get the network stats
+			network := stat.Networks
+			// If there's no previous stats for this container then we ignore it but save the stats
+			if _, ok := d.previousStats[container.ID]; !ok {
+				d.previousStats[container.ID] = stat
+				return
+			}
+			// Now we want the tx and rx bytes
+			txBytes := 0
+			rxBytes := 0
+			// Loop through the networks and add em up
+			for _, net := range network {
+				txBytes += int(net.TxBytes)
+				rxBytes += int(net.RxBytes)
+			}
+			// Add up previous stats
+			prev := d.previousStats[container.ID]
+			for _, net := range prev.Networks {
+				txBytes -= int(net.TxBytes)
+				rxBytes -= int(net.RxBytes)
+			}
+			// Now we have how much traffic has happened in the last "update time" seconds
+			// So to get this into a bytes/sec we divide by the update time
+			txBytes /= d.UpdateEvery
+			rxBytes /= d.UpdateEvery
+			// Now we have what we wanted
+			name := strings.TrimPrefix(container.Names[0], "/")
+
+			seen[name] = true
+
+			if !d.containers[name] {
+				// Add the container to our charts
+				d.addContainerCharts(name)
+				d.containers[name] = true
+			}
+
+			// Now we create our metrics
+			px := fmt.Sprintf("container_%s_", name)
+			mx[px+"network_bytes_tx"] = int64(txBytes)
+			mx[px+"network_bytes_rx"] = int64(rxBytes)
+			// Update the previous stats
 			d.previousStats[container.ID] = stat
-			cancel()
-			continue
-		}
-		// Now we want the tx and rx bytes
-		txBytes := 0
-		rxBytes := 0
-		// Loop through the networks and add em up
-		for _, net := range network {
-			txBytes += int(net.TxBytes)
-			rxBytes += int(net.RxBytes)
-		}
-		// Add up previous stats
-		prev := d.previousStats[container.ID]
-		for _, net := range prev.Networks {
-			txBytes -= int(net.TxBytes)
-			rxBytes -= int(net.RxBytes)
-		}
-		// Now we have how much traffic has happened in the last "update time" seconds
-		// So to get this into a bytes/sec we divide by the update time
-		txBytes /= d.UpdateEvery
-		rxBytes /= d.UpdateEvery
-		// Now we have what we wanted
-		name := strings.TrimPrefix(container.Names[0], "/")
+			d.Debugf("collected stats for container %s", container.ID[:12])
+		}(ctx, container)
+	}
 
-		seen[name] = true
-
-		if !d.containers[name] {
-			// Add the container to our charts
-			d.addContainerCharts(name)
-			d.containers[name] = true
-		}
-
-		// Now we create our metrics
-		px := fmt.Sprintf("container_%s_", name)
-		mx[px+"network_bytes_tx"] = int64(txBytes)
-		mx[px+"network_bytes_rx"] = int64(rxBytes)
-		// Update the previous stats
-		d.previousStats[container.ID] = stat
-		// We can now close the context
-		cancel()
+	// Wait for all the containers to be done
+	for i := 0; i < cap(waitGroup); i++ {
+		waitGroup <- struct{}{}
 	}
 
 	for name := range d.containers {
