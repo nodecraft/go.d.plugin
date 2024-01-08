@@ -41,6 +41,7 @@ GOLDFLAGS="$GOLDFLAGS -w -s -X main.version=$VERSION"
 build() {
   echo "Building ${GOOS}/${GOARCH}"
   CGO_ENABLED=0 GOOS="$1" GOARCH="$2" go build -ldflags "${GOLDFLAGS}" -o "$3" "github.com/netdata/go.d.plugin/cmd/godplugin"
+  chmod +x "$3"
 }
 
 create_config_archives() {
@@ -60,7 +61,7 @@ build_all_platforms() {
   for PLATFORM in "${PLATFORMS[@]}"; do
     GOOS=$(getos "$PLATFORM")
     GOARCH=$(getarch "$PLATFORM")
-    FILE="bin/go.d.plugin-${VERSION}.${GOOS}-${GOARCH}"
+    FILE="bin/nodecraft.go.d.plugin-${VERSION}.${GOOS}-${GOARCH}"
 
     build "$GOOS" "$GOARCH" "$FILE"
 
@@ -75,7 +76,7 @@ build_specific_platform() {
   GOARCH=$(getarch "$1")
   : "${GOARCH:=amd64}"
 
-  build "$GOOS" "$GOARCH" bin/godplugin
+  build "$GOOS" "$GOARCH" bin/nodecraft.go.d.plugin
 }
 
 build_current_platform() {
@@ -83,7 +84,7 @@ build_current_platform() {
   GOOS=${GOOS:-$GOHOSTOS}
   GOARCH=${GOARCH:-$GOHOSTARCH}
 
-  build "$GOOS" "$GOARCH" bin/godplugin
+  build "$GOOS" "$GOARCH" bin/nodecraft.go.d.plugin
 }
 
 if [[ "$WHICH" == "configs" ]]; then
