@@ -50,84 +50,8 @@ see the appropriate collector readme.
 
 | Name                                                                                                |           Monitors            |
 |:----------------------------------------------------------------------------------------------------|:-----------------------------:|
-| [activemq](https://github.com/netdata/go.d.plugin/tree/master/modules/activemq)                     |           ActiveMQ            |
-| [apache](https://github.com/netdata/go.d.plugin/tree/master/modules/apache)                         |            Apache             |
-| [bind](https://github.com/netdata/go.d.plugin/tree/master/modules/bind)                             |           ISC Bind            |
-| [cassandra](https://github.com/netdata/go.d.plugin/tree/master/modules/cassandra)                   |           Cassandra           |
-| [chrony](https://github.com/netdata/go.d.plugin/tree/master/modules/chrony)                         |            Chrony             |
-| [cockroachdb](https://github.com/netdata/go.d.plugin/tree/master/modules/cockroachdb)               |          CockroachDB          |
-| [consul](https://github.com/netdata/go.d.plugin/tree/master/modules/consul)                         |            Consul             |
-| [coredns](https://github.com/netdata/go.d.plugin/tree/master/modules/coredns)                       |            CoreDNS            |
-| [couchbase](https://github.com/netdata/go.d.plugin/tree/master/modules/couchbase)                   |           Couchbase           |
-| [couchdb](https://github.com/netdata/go.d.plugin/tree/master/modules/couchdb)                       |            CouchDB            |
-| [dnsdist](https://github.com/netdata/go.d.plugin/tree/master/modules/dnsdist)                       |            Dnsdist            |
-| [dnsmasq](https://github.com/netdata/go.d.plugin/tree/master/modules/dnsmasq)                       |     Dnsmasq DNS Forwarder     |
-| [dnsmasq_dhcp](https://github.com/netdata/go.d.plugin/tree/master/modules/dnsmasq_dhcp)             |         Dnsmasq DHCP          |
-| [dns_query](https://github.com/netdata/go.d.plugin/tree/master/modules/dnsquery)                    |         DNS Query RTT         |
-| [docker](https://github.com/netdata/go.d.plugin/tree/master/modules/docker)                         |         Docker Engine         |
-| [docker_engine](https://github.com/netdata/go.d.plugin/tree/master/modules/docker_engine)           |         Docker Engine         |
-| [dockerhub](https://github.com/netdata/go.d.plugin/tree/master/modules/dockerhub)                   |          Docker Hub           |
-| [elasticsearch](https://github.com/netdata/go.d.plugin/tree/master/modules/elasticsearch)           |   Elasticsearch/OpenSearch    |
-| [energid](https://github.com/netdata/go.d.plugin/tree/master/modules/energid)                       |          Energi Core          |
-| [envoy](https://github.com/netdata/go.d.plugin/tree/master/modules/envoy)                           |             Envoy             |
-| [example](https://github.com/netdata/go.d.plugin/tree/master/modules/example)                       |               -               |
-| [filecheck](https://github.com/netdata/go.d.plugin/tree/master/modules/filecheck)                   |     Files and Directories     |
-| [fluentd](https://github.com/netdata/go.d.plugin/tree/master/modules/fluentd)                       |            Fluentd            |
-| [freeradius](https://github.com/netdata/go.d.plugin/tree/master/modules/freeradius)                 |          FreeRADIUS           |
-| [haproxy](https://github.com/netdata/go.d.plugin/tree/master/modules/haproxy)                       |            HAProxy            |
-| [hdfs](https://github.com/netdata/go.d.plugin/tree/master/modules/hdfs)                             |             HDFS              |
-| [httpcheck](https://github.com/netdata/go.d.plugin/tree/master/modules/httpcheck)                   |       Any HTTP Endpoint       |
-| [isc_dhcpd](https://github.com/netdata/go.d.plugin/tree/master/modules/isc_dhcpd)                   |           ISC DHCP            |
-| [k8s_kubelet](https://github.com/netdata/go.d.plugin/tree/master/modules/k8s_kubelet)               |            Kubelet            |
-| [k8s_kubeproxy](https://github.com/netdata/go.d.plugin/tree/master/modules/k8s_kubeproxy)           |          Kube-proxy           |
-| [k8s_state](https://github.com/netdata/go.d.plugin/tree/master/modules/k8s_state)                   |   Kubernetes cluster state    |
-| [lighttpd](https://github.com/netdata/go.d.plugin/tree/master/modules/lighttpd)                     |           Lighttpd            |
-| [logind](https://github.com/netdata/go.d.plugin/tree/master/modules/logind)                         |        systemd-logind         |
-| [logstash](https://github.com/netdata/go.d.plugin/tree/master/modules/logstash)                     |           Logstash            |
-| [mongoDB](https://github.com/netdata/go.d.plugin/tree/master/modules/mongodb)                       |            MongoDB            |
-| [mysql](https://github.com/netdata/go.d.plugin/tree/master/modules/mysql)                           |             MySQL             |
-| [nginx](https://github.com/netdata/go.d.plugin/tree/master/modules/nginx)                           |             NGINX             |
-| [nginxplus](https://github.com/netdata/go.d.plugin/tree/master/modules/nginxplus)                   |          NGINX Plus           |
-| [nginxvts](https://github.com/netdata/go.d.plugin/tree/master/modules/nginxvts)                     |           NGINX VTS           |
-| [ntpd](https://github.com/netdata/go.d.plugin/tree/master/modules/ntpd)                             |          NTP daemon           |
-| [nvme](https://github.com/netdata/go.d.plugin/tree/master/modules/nvme)                             |         NVMe devices          |
-| [openvpn](https://github.com/netdata/go.d.plugin/tree/master/modules/openvpn)                       |            OpenVPN            |
-| [openvpn_status_log](https://github.com/netdata/go.d.plugin/tree/master/modules/openvpn_status_log) |            OpenVPN            |
-| [pgbouncer](https://github.com/netdata/go.d.plugin/tree/master/modules/pgbouncer)                   |           PgBouncer           |
-| [phpdaemon](https://github.com/netdata/go.d.plugin/tree/master/modules/phpdaemon)                   |           phpDaemon           |
-| [phpfpm](https://github.com/netdata/go.d.plugin/tree/master/modules/phpfpm)                         |            PHP-FPM            |
-| [pihole](https://github.com/netdata/go.d.plugin/tree/master/modules/pihole)                         |            Pi-hole            |
-| [pika](https://github.com/netdata/go.d.plugin/tree/master/modules/pika)                             |             Pika              |
-| [ping](https://github.com/netdata/go.d.plugin/tree/master/modules/ping)                             |       Any network host        |
-| [prometheus](https://github.com/netdata/go.d.plugin/tree/master/modules/prometheus)                 |    Any Prometheus Endpoint    |
-| [portcheck](https://github.com/netdata/go.d.plugin/tree/master/modules/portcheck)                   |       Any TCP Endpoint        |
-| [postgres](https://github.com/netdata/go.d.plugin/tree/master/modules/postgres)                     |          PostgreSQL           |
-| [powerdns](https://github.com/netdata/go.d.plugin/tree/master/modules/powerdns)                     | PowerDNS Authoritative Server |
-| [powerdns_recursor](https://github.com/netdata/go.d.plugin/tree/master/modules/powerdns_recursor)   |       PowerDNS Recursor       |
-| [proxysql](https://github.com/netdata/go.d.plugin/tree/master/modules/proxysql)                     |           ProxySQL            |
-| [pulsar](https://github.com/netdata/go.d.plugin/tree/master/modules/portcheck)                      |         Apache Pulsar         |
-| [rabbitmq](https://github.com/netdata/go.d.plugin/tree/master/modules/rabbitmq)                     |           RabbitMQ            |
-| [redis](https://github.com/netdata/go.d.plugin/tree/master/modules/redis)                           |             Redis             |
-| [scaleio](https://github.com/netdata/go.d.plugin/tree/master/modules/scaleio)                       |       Dell EMC ScaleIO        |
-| [SNMP](https://github.com/netdata/go.d.plugin/blob/master/modules/snmp)                             |             SNMP              |
-| [solr](https://github.com/netdata/go.d.plugin/tree/master/modules/solr)                             |             Solr              |
-| [squidlog](https://github.com/netdata/go.d.plugin/tree/master/modules/squidlog)                     |             Squid             |
-| [springboot2](https://github.com/netdata/go.d.plugin/tree/master/modules/springboot2)               |         Spring Boot2          |
-| [supervisord](https://github.com/netdata/go.d.plugin/tree/master/modules/supervisord)               |          Supervisor           |
-| [systemdunits](https://github.com/netdata/go.d.plugin/tree/master/modules/systemdunits)             |      Systemd unit state       |
-| [tengine](https://github.com/netdata/go.d.plugin/tree/master/modules/tengine)                       |            Tengine            |
-| [traefik](https://github.com/netdata/go.d.plugin/tree/master/modules/traefik)                       |            Traefik            |
-| [upsd](https://github.com/netdata/go.d.plugin/tree/master/modules/upsd)                             |          UPSd (Nut)           |
-| [unbound](https://github.com/netdata/go.d.plugin/tree/master/modules/unbound)                       |            Unbound            |
-| [vcsa](https://github.com/netdata/go.d.plugin/tree/master/modules/vcsa)                             |   vCenter Server Appliance    |
-| [vernemq](https://github.com/netdata/go.d.plugin/tree/master/modules/vernemq)                       |            VerneMQ            |
-| [vsphere](https://github.com/netdata/go.d.plugin/tree/master/modules/vsphere)                       |     VMware vCenter Server     |
-| [web_log](https://github.com/netdata/go.d.plugin/tree/master/modules/weblog)                        |         Apache/NGINX          |
-| [wireguard](https://github.com/netdata/go.d.plugin/tree/master/modules/wireguard)                   |           WireGuard           |
-| [whoisquery](https://github.com/netdata/go.d.plugin/tree/master/modules/whoisquery)                 |         Domain Expiry         |
-| [windows](https://github.com/netdata/go.d.plugin/tree/master/modules/windows)                       |            Windows            |
-| [x509check](https://github.com/netdata/go.d.plugin/tree/master/modules/x509check)                   |     Digital Certificates      |
-| [zookeeper](https://github.com/netdata/go.d.plugin/tree/master/modules/zookeeper)                   |           ZooKeeper           |
+| docker_network | Docker Networking |
+
 
 ## Configuration
 
